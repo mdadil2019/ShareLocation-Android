@@ -15,7 +15,6 @@ public interface MapActivityMVP {
 
         void fetchLocationUpdateOfFirebase(String id);
 
-        void stopLocationTracking(String id);
 
     }
 }

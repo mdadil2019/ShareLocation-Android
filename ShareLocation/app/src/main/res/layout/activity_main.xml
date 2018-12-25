@@ -36,4 +36,14 @@
         android:layout_alignTop="@+id/buttonGenerate"
         android:layout_marginTop="40dp"
         android:visibility="invisible"/>
+
+    <Button
+        android:id="@+id/buttonStop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="29dp"
+        android:text="Stop"
+        android:enabled="false"/>
 </RelativeLayout>

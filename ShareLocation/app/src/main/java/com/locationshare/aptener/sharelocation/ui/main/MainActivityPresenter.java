@@ -8,6 +8,7 @@ import com.locationshare.aptener.sharelocation.data.network.FirebaseCallback;
 import com.locationshare.aptener.sharelocation.data.network.service.FirebaseService;
 import com.locationshare.aptener.sharelocation.data.network.service.ListenForChangeInState;
 import com.locationshare.aptener.sharelocation.ui.main.MainActivityMVP.View;
+import com.locationshare.aptener.sharelocation.utils.Constants;
 
 public class MainActivityPresenter implements MainActivityMVP.Presenter {
 
@@ -41,5 +42,29 @@ public class MainActivityPresenter implements MainActivityMVP.Presenter {
                 context.startService(intent);
             }
         });
+    }
+
+    @Override
+    public void isTrackedByAnyone() {
+        if(prefs.getId()!=null){
+            String id = prefs.getId();
+            FirebaseService.getStatusOfUser(id,new FirebaseCallback(){
+                @Override
+                public void onDataReturn(String value) {
+                    if(value.equals(Constants.LISTEN_STATUS)){
+                        view.activateStopButton();
+                    }else if(value.equals(Constants.STOP_LISTEN_STATUS)){
+                        view.deactivateStopButton();
+                    }
+                }
+            });
+        }
+    }
+
+
+    @Override
+    public void stopLocationTracking() {
+        String id = prefs.getId();
+        FirebaseService.stopLocationUpdates(id);
     }
 }

@@ -19,17 +19,13 @@ public class MapActivityPresenter implements MapActivityMVP.Presenter {
         FirebaseService.getLocationUpdates(id, new FirebaseCallback() {
             @Override
             public void onDataReturn(String value) {
-                String lat = value.substring(0,value.indexOf(',') - 1);
-                String lng = value.substring(value.indexOf(',')+2,value.indexOf('-') - 1);
-                String recentUpdateTime = value.substring(value.indexOf('-')+1,value.length()-1);
+                String lat = value.substring(0,value.indexOf(','));
+                String lng = value.substring(value.indexOf(',')+2,value.indexOf('?'));
+                String recentUpdateTime = value.substring(value.indexOf('?')+1,value.length()-1);
                 latLng = new LatLng(Double.valueOf(lat),Double.valueOf(lng));
                 view.updateOnMap(latLng,recentUpdateTime);
             }
         });
     }
 
-    @Override
-    public void stopLocationTracking(String id) {
-        FirebaseService.stopLocationUpdates(id);
-    }
 }

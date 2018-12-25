@@ -14,6 +14,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.telephony.TelephonyManager;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -46,6 +47,9 @@ public class MainActivity extends AppCompatActivity implements MainActivityMVP.V
 
     @BindView(R.id.pgBar)
     ProgressBar progressBar;
+
+    @BindView(R.id.buttonStop)
+    Button stopButton;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -124,8 +128,23 @@ public class MainActivity extends AppCompatActivity implements MainActivityMVP.V
     }
 
     @Override
+    public void activateStopButton() {
+        stopButton.setEnabled(true);
+    }
+
+    @Override
+    public void deactivateStopButton() {
+        stopButton.setEnabled(false);
+    }
+
+    @OnClick(R.id.buttonStop)void stopTracking(){
+        presenter.stopLocationTracking();
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
         presenter.setView(this);
+        presenter.isTrackedByAnyone();
     }
 }

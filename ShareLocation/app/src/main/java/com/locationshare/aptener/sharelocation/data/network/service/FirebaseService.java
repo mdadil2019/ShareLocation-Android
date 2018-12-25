@@ -63,4 +63,19 @@ public class FirebaseService {
         currentUser.child(Constants.STATUS).setValue(Constants.STOP_LISTEN_STATUS);
         currentUser.child(LOCATION).setValue("No value");
     }
+
+    public static void getStatusOfUser(String id, final FirebaseCallback firebaseCallback) {
+        getRootReference().child(id).child(Constants.STATUS).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                String snapShotValue = dataSnapshot.getValue().toString();
+                firebaseCallback.onDataReturn(snapShotValue);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
 }

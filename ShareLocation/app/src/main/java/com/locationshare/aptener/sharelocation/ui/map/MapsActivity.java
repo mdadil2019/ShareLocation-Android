@@ -75,6 +75,5 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        presenter.stopLocationTracking(id);
     }
 }

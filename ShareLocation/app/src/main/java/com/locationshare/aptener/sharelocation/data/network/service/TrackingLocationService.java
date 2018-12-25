@@ -43,7 +43,7 @@ public class TrackingLocationService extends Service {
             String lat = String.valueOf(currentLocation.getLatitude());
             String lng = String.valueOf(currentLocation.getLongitude());
 
-            String infoString = lat + ", " + lng + " - " + getFormattedDate();
+            String infoString = lat + ", " + lng + " ? " + getFormattedDate();
 
 
             FirebaseInstance.getRootReference().child(id).child(LOCATION).setValue(infoString);

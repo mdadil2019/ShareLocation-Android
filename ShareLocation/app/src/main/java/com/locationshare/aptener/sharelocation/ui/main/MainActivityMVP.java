@@ -11,11 +11,19 @@ public interface MainActivityMVP {
 
         void hideProgressBar();
 
+        void activateStopButton();
+
+        void deactivateStopButton();
     }
 
     interface Presenter{
         void setView(View v);
 
         void addUser(String deviceId);
+
+        void isTrackedByAnyone();
+
+        void stopLocationTracking();
+
     }
 }
