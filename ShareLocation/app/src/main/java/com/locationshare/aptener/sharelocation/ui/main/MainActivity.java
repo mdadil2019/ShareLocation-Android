@@ -56,7 +56,6 @@ public class MainActivity extends AppCompatActivity implements MainActivityMVP.V
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         ((MyApp)getApplication()).getApplicationComponent().inject(this);
-        handleIntent();
         askPermissions();
     }
 
@@ -65,6 +64,8 @@ public class MainActivity extends AppCompatActivity implements MainActivityMVP.V
         if(ContextCompat.checkSelfPermission(this,Manifest.permission.ACCESS_COARSE_LOCATION)!=PackageManager.PERMISSION_GRANTED
                 || ContextCompat.checkSelfPermission(this,Manifest.permission.READ_PHONE_STATE)!= PackageManager.PERMISSION_GRANTED){
             requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION ,Manifest.permission.READ_PHONE_STATE}, GLOBAL_REQUEST_CODE);
+        }else{
+            handleIntent();
         }
 
     }
@@ -88,12 +89,12 @@ public class MainActivity extends AppCompatActivity implements MainActivityMVP.V
             String deviceId = appLinkData.getLastPathSegment();
             Intent intent = new Intent(this,MapsActivity.class);
             intent.putExtra("ID",deviceId);
+            intent.putExtra("MY_ID",getId());
             startActivity(intent);
         }
     }
 
     private String getId(){
-        TelephonyManager telephonyManager = (TelephonyManager)getSystemService(TELEPHONY_SERVICE);
         String android_id = Settings.Secure.getString(getContentResolver(),
                 Settings.Secure.ANDROID_ID);
         if(android_id!=null&&!android_id.equals("")){
@@ -113,6 +114,9 @@ public class MainActivity extends AppCompatActivity implements MainActivityMVP.V
             if(grantResults[i]==-1){
                 Toast.makeText(this, "App will not work without these permissions", Toast.LENGTH_SHORT).show();
                 finish();
+            }else if(grantResults[i]==0 && grantResults.length-1 == i){
+                //all permissions are granted
+                handleIntent();
             }
         }
     }

@@ -13,7 +13,7 @@ public interface MapActivityMVP {
     interface Presenter{
         void setView(View view);
 
-        void fetchLocationUpdateOfFirebase(String id);
+        void fetchLocationUpdateOfFirebase(String id, String myId);
 
 
     }

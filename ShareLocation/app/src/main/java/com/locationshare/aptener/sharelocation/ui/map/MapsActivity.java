@@ -18,7 +18,7 @@ import javax.inject.Inject;
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback,MapActivityMVP.View {
 
     private GoogleMap mMap;
-    String id;
+    String id,myId;
     @Inject
     MapActivityMVP.Presenter presenter;
     @Override
@@ -32,6 +32,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mapFragment.getMapAsync(this);
 
         id = getIntent().getStringExtra("ID");
+        myId = getIntent().getStringExtra("MY_ID");
     }
 
 
@@ -54,7 +55,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
 
         //ask presenter to listen to change in location and update the view accordingly
-        presenter.fetchLocationUpdateOfFirebase(id);
+        presenter.fetchLocationUpdateOfFirebase(id,myId);
+
     }
 
     @Override

@@ -48,6 +48,8 @@ public class ListenForChangeInState extends Service {
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         if(dataSnapshot.getValue().equals(Constants.LISTEN_STATUS)){
                             //start location service to update onLocationChanged into Firebase Database
+
+                            //Note: test it when more then 1 user track at same time using the link shared
                             startService(trackingServiceIntent);
                         }else if(dataSnapshot.getValue().equals(Constants.STOP_LISTEN_STATUS)){
                             stopService(trackingServiceIntent);
