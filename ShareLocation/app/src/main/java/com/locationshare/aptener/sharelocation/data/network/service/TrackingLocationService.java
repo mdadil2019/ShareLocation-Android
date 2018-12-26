@@ -23,7 +23,7 @@ import static com.locationshare.aptener.sharelocation.utils.Constants.LOCATION;
 
 public class TrackingLocationService extends Service {
     private LocationManager mLocationManager;
-    private static final int LOCATION_INTERVAL = 100;
+    private static final int LOCATION_INTERVAL = 1000;
     private static final float LOCATION_DISTANCE = 0;
 
     @Inject
@@ -86,8 +86,8 @@ public class TrackingLocationService extends Service {
         initializeLocationManager();
 //        if(Permissions.getLocationPermissions(this,))
         try {
-            mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, LOCATION_INTERVAL, LOCATION_DISTANCE,
-                    mLocationListeners[1]);
+            mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, LOCATION_INTERVAL, LOCATION_DISTANCE,
+                    mLocationListeners[0]);
         }catch (SecurityException se){
             Toast.makeText(this, "Security Exception", Toast.LENGTH_SHORT).show();
         }
