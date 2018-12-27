@@ -14,11 +14,12 @@ public class MapActivityPresenter implements MapActivityMVP.Presenter {
 
     @Override
     public void fetchLocationUpdateOfFirebase(final String id, final String myId) {
+        //add current user in main user's (id) child
+        FirebaseService.addLiveTrackingInfo(id,myId);
+
         FirebaseService.getLocationUpdates(id, new FirebaseCallback() {
             @Override
             public void onDataReturn(String value) {
-                //add current user in main user's (id) child
-                FirebaseService.addLiveTrackingInfo(id,myId);
 
                 String lat = value.substring(0,value.indexOf(','));
                 String lng = value.substring(value.indexOf(',')+2,value.indexOf('?'));

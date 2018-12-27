@@ -99,7 +99,7 @@ public class TrackingLocationService extends Service {
         if(mLocationManager!=null){
             for(int i = 0;i<mLocationListeners.length;i++){
                 try{
-                    mLocationManager.removeUpdates(mLocationListeners[1]);
+                    mLocationManager.removeUpdates(mLocationListeners[i]);
                 }catch (Exception ex){
                     //there is an error
                 }

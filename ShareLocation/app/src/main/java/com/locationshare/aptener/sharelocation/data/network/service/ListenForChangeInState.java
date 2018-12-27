@@ -19,6 +19,8 @@ public class ListenForChangeInState extends Service {
 
     Runnable runnable;
 
+    boolean isServiceRunning;
+
     @Inject
     AppPreferenceHelper prefs;
     @Override
@@ -50,9 +52,16 @@ public class ListenForChangeInState extends Service {
                             //start location service to update onLocationChanged into Firebase Database
 
                             //Note: test it when more then 1 user track at same time using the link shared
-                            startService(trackingServiceIntent);
+
+                            if(!isServiceRunning){
+                                startService(trackingServiceIntent);
+                                isServiceRunning = true;
+                            }
                         }else if(dataSnapshot.getValue().equals(Constants.STOP_LISTEN_STATUS)){
-                            stopService(trackingServiceIntent);
+                            if(isServiceRunning){
+                                stopService(trackingServiceIntent);
+                                isServiceRunning= false;
+                            }
                         }
                     }
 
