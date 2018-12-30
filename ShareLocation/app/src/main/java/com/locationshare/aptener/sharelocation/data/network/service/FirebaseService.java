@@ -8,7 +8,9 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
+import com.locationshare.aptener.sharelocation.data.model.User;
 import com.locationshare.aptener.sharelocation.data.network.FirebaseCallback;
+import com.locationshare.aptener.sharelocation.data.network.FirebaseUserAddedCallback;
 import com.locationshare.aptener.sharelocation.utils.Constants;
 
 import static com.locationshare.aptener.sharelocation.data.network.service.FirebaseInstance.getRootReference;
@@ -103,5 +105,40 @@ public class FirebaseService {
 
     public static void addLiveTrackingInfo(String id, String myId){
         FirebaseInstance.getRootReference().child(id).child(LIVE_TRACKING_USERS).child(myId).setValue(LIVE_STATUS_ON);
+    }
+
+    public static void getTrackingUsers(String myId, final FirebaseUserAddedCallback callback) {
+        FirebaseInstance.getRootReference().child(myId).child(LIVE_TRACKING_USERS).addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                handleLiveStatusUpdate(dataSnapshot,callback);
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                handleLiveStatusUpdate(dataSnapshot,callback);
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+    private static void handleLiveStatusUpdate(DataSnapshot dataSnapshot, FirebaseUserAddedCallback callback){
+        User user = new User();
+        user.setUserId(dataSnapshot.getKey());
+        user.setStatus(dataSnapshot.getValue().toString());
+        callback.userAdded(user);
     }
 }

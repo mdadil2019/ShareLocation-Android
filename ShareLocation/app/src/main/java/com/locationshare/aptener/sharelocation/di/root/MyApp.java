@@ -2,6 +2,7 @@ package com.locationshare.aptener.sharelocation.di.root;
 
 import android.app.Application;
 
+import com.locationshare.aptener.sharelocation.di.LiveUsersActivityModule;
 import com.locationshare.aptener.sharelocation.di.MainActivityModule;
 import com.locationshare.aptener.sharelocation.di.MapActivityModule;
 
@@ -17,6 +18,7 @@ public class MyApp extends Application {
                 .applicationModule(new ApplicationModule(this))
                 .mainActivityModule(new MainActivityModule())
                 .mapActivityModule(new MapActivityModule())
+                .liveUsersActivityModule(new LiveUsersActivityModule())
                 .build();
     }
 

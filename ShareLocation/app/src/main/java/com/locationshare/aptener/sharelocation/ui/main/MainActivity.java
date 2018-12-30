@@ -25,7 +25,9 @@ import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import com.locationshare.aptener.sharelocation.R;
+import com.locationshare.aptener.sharelocation.data.AppPreferenceHelper;
 import com.locationshare.aptener.sharelocation.di.root.MyApp;
+import com.locationshare.aptener.sharelocation.ui.live.LiveUsersActivity;
 import com.locationshare.aptener.sharelocation.ui.map.MapsActivity;
 
 import java.util.List;
@@ -41,6 +43,9 @@ public class MainActivity extends AppCompatActivity implements MainActivityMVP.V
     private static final int GLOBAL_REQUEST_CODE = 1;
     @Inject
     MainActivityMVP.Presenter presenter;
+
+    @Inject
+    AppPreferenceHelper prefs;
 
     @BindView(R.id.editTextLink)
     EditText linkEt;
@@ -65,7 +70,12 @@ public class MainActivity extends AppCompatActivity implements MainActivityMVP.V
                 || ContextCompat.checkSelfPermission(this,Manifest.permission.READ_PHONE_STATE)!= PackageManager.PERMISSION_GRANTED){
             requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION ,Manifest.permission.READ_PHONE_STATE}, GLOBAL_REQUEST_CODE);
         }else{
-            handleIntent();
+            if(prefs.getId()!=null)
+                handleIntent();
+            else{
+                prefs.saveId(getId());
+                handleIntent();
+            }
         }
 
     }
@@ -76,8 +86,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityMVP.V
         2. append the deviceId after the app link
         3. show link in edit text
          */
-            String id = getId();
-            presenter.addUser(id);
+            presenter.addUser(prefs.getId());
     }
 
     private void handleIntent() {
@@ -89,7 +98,6 @@ public class MainActivity extends AppCompatActivity implements MainActivityMVP.V
             String deviceId = appLinkData.getLastPathSegment();
             Intent intent = new Intent(this,MapsActivity.class);
             intent.putExtra("ID",deviceId);
-            intent.putExtra("MY_ID",getId());
             startActivity(intent);
         }
     }
@@ -145,6 +153,10 @@ public class MainActivity extends AppCompatActivity implements MainActivityMVP.V
         presenter.stopLocationTracking();
     }
 
+    @OnClick(R.id.buttonShowLiveUsers)void showLiveUsers(){
+        //starts live user activity
+        startActivity(new Intent(this,LiveUsersActivity.class));
+    }
     @Override
     protected void onResume() {
         super.onResume();

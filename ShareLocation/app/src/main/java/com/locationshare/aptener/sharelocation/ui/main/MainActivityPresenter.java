@@ -33,7 +33,7 @@ public class MainActivityPresenter implements MainActivityMVP.Presenter {
             @Override
             public void onDataReturn(String value) {
                 view.hideProgressBar();
-                prefs.saveId(value);
+//                prefs.saveId(value);  Note: we are saving the id when users first opens the app and then we will pass same id everywhere
                 String sharableLink = "http://www.share.com/myapp/" + value ;
                 view.showLink(sharableLink);
 

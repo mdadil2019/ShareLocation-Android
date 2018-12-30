@@ -41,9 +41,17 @@
         android:id="@+id/buttonStop"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/editTextLink"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="29dp"
-        android:text="Stop"
-        android:enabled="false"/>
+        android:layout_marginBottom="45dp"
+        android:enabled="false"
+        android:text="Stop" />
+
+    <Button
+        android:id="@+id/buttonShowLiveUsers"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/editTextLink"
+        android:layout_alignBottom="@+id/buttonStop"
+        android:text="Show Live Users" />
 </RelativeLayout>

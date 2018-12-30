@@ -17,7 +17,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <uses-library android:name="org.apache.http.legacy" android:required="false"/>
+        <uses-library
+            android:name="org.apache.http.legacy"
+            android:required="false" />
 
         <activity android:name=".ui.main.MainActivity">
             <intent-filter>
@@ -52,8 +54,8 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
-        <activity
-            android:name=".ui.map.MapsActivity"></activity>
+        <activity android:name=".ui.map.MapsActivity" />
+        <activity android:name=".ui.live.LiveUsersActivity"></activity>
     </application>
 
 </manifest>

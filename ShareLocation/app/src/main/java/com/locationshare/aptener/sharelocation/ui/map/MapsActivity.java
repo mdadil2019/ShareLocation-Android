@@ -11,6 +11,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.locationshare.aptener.sharelocation.R;
+import com.locationshare.aptener.sharelocation.data.AppPreferenceHelper;
 import com.locationshare.aptener.sharelocation.di.root.MyApp;
 
 import javax.inject.Inject;
@@ -18,9 +19,12 @@ import javax.inject.Inject;
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback,MapActivityMVP.View {
 
     private GoogleMap mMap;
-    String id,myId;
+    String id;
     @Inject
     MapActivityMVP.Presenter presenter;
+
+    @Inject
+    AppPreferenceHelper prefs;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,7 +36,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mapFragment.getMapAsync(this);
 
         id = getIntent().getStringExtra("ID");
-        myId = getIntent().getStringExtra("MY_ID");
     }
 
 
@@ -50,12 +53,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap = googleMap;
 
         // Add a marker in Sydney and move the camera
-        LatLng sydney = new LatLng(-34, 151);
-        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+        LatLng location = new LatLng(20.5937, 78.9629);
+        mMap.addMarker(new MarkerOptions().position(location).title("Fetching location..."));
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(location));
 
         //ask presenter to listen to change in location and update the view accordingly
-        presenter.fetchLocationUpdateOfFirebase(id,myId);
+        presenter.fetchLocationUpdateOfFirebase(id,prefs.getId());
 
     }
 
@@ -65,7 +68,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.addMarker(new MarkerOptions().position(latLng).title(lastUpdate));
 
         mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-        mMap.animateCamera(CameraUpdateFactory.zoomTo(17.0f));
+        mMap.animateCamera(CameraUpdateFactory.zoomTo(25.0f));
     }
 
     @Override

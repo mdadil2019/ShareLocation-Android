@@ -3,6 +3,7 @@ package com.locationshare.aptener.sharelocation.data.network.service;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -23,8 +24,9 @@ import static com.locationshare.aptener.sharelocation.utils.Constants.LOCATION;
 
 public class TrackingLocationService extends Service {
     private LocationManager mLocationManager;
-    private static final int LOCATION_INTERVAL = 1000;
-    private static final float LOCATION_DISTANCE = 0;
+    Criteria criteria;
+    private static final int LOCATION_INTERVAL = 100;
+    private static final float LOCATION_DISTANCE = 1;
 
     @Inject
     AppPreferenceHelper prefs;
@@ -86,8 +88,9 @@ public class TrackingLocationService extends Service {
         initializeLocationManager();
 //        if(Permissions.getLocationPermissions(this,))
         try {
-            mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, LOCATION_INTERVAL, LOCATION_DISTANCE,
-                    mLocationListeners[0]);
+//            LocationManager.NETWORK_PROVIDER, LOCATION_INTERVAL, LOCATION_DISTANCE,
+//                    mLocationListeners[1]
+            mLocationManager.requestLocationUpdates(LOCATION_INTERVAL,LOCATION_DISTANCE,criteria,mLocationListeners[0],null);
         }catch (SecurityException se){
             Toast.makeText(this, "Security Exception", Toast.LENGTH_SHORT).show();
         }
@@ -110,6 +113,15 @@ public class TrackingLocationService extends Service {
     private void initializeLocationManager() {
         if (mLocationManager == null) {
             mLocationManager = (LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
+            criteria = new Criteria();
+            criteria.setAccuracy(Criteria.ACCURACY_FINE);
+            criteria.setPowerRequirement(Criteria.POWER_HIGH);
+            criteria.setAltitudeRequired(false);
+            criteria.setSpeedRequired(false);
+            criteria.setCostAllowed(true);
+            criteria.setBearingRequired(false);
+            criteria.setHorizontalAccuracy(Criteria.ACCURACY_HIGH);
+            criteria.setVerticalAccuracy(Criteria.ACCURACY_HIGH);
         }
     }
 
