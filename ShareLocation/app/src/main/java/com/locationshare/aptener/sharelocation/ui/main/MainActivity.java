@@ -124,7 +124,12 @@ public class MainActivity extends AppCompatActivity implements MainActivityMVP.V
                 finish();
             }else if(grantResults[i]==0 && grantResults.length-1 == i){
                 //all permissions are granted
-                handleIntent();
+                if(prefs.getId()!=null)
+                    handleIntent();
+                else{
+                    prefs.saveId(getId());
+                    handleIntent();
+                }
             }
         }
     }
@@ -151,6 +156,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityMVP.V
 
     @OnClick(R.id.buttonStop)void stopTracking(){
         presenter.stopLocationTracking();
+        Toast.makeText(this, "Tracking stopped", Toast.LENGTH_SHORT).show();
     }
 
     @OnClick(R.id.buttonShowLiveUsers)void showLiveUsers(){
@@ -161,6 +167,6 @@ public class MainActivity extends AppCompatActivity implements MainActivityMVP.V
     protected void onResume() {
         super.onResume();
         presenter.setView(this);
-        presenter.isTrackedByAnyone();
+//        presenter.isTrackedByAnyone();
     }
 }

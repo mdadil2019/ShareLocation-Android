@@ -4,10 +4,12 @@ import android.location.Location;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.locationshare.aptener.sharelocation.R;
@@ -66,9 +68,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void updateOnMap(LatLng latLng, String lastUpdate) {
         mMap.clear();
         mMap.addMarker(new MarkerOptions().position(latLng).title(lastUpdate));
+        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 16);
+//        mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng)); ::=> Note: zooming after moving it's position will result into zoom to random location
+        mMap.animateCamera(cameraUpdate);
 
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-        mMap.animateCamera(CameraUpdateFactory.zoomTo(25.0f));
+
     }
 
     @Override

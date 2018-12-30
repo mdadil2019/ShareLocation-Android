@@ -25,8 +25,8 @@ import static com.locationshare.aptener.sharelocation.utils.Constants.LOCATION;
 public class TrackingLocationService extends Service {
     private LocationManager mLocationManager;
     Criteria criteria;
-    private static final int LOCATION_INTERVAL = 100;
-    private static final float LOCATION_DISTANCE = 1;
+    private static final int LOCATION_INTERVAL = 1000 * 5;
+    private static final int LOCATION_DISTANCE = 1;
 
     @Inject
     AppPreferenceHelper prefs;
@@ -46,7 +46,6 @@ public class TrackingLocationService extends Service {
             String lng = String.valueOf(currentLocation.getLongitude());
 
             String infoString = lat + ", " + lng + " ? " + getFormattedDate();
-
 
             FirebaseInstance.getRootReference().child(id).child(LOCATION).setValue(infoString);
         }
@@ -88,9 +87,11 @@ public class TrackingLocationService extends Service {
         initializeLocationManager();
 //        if(Permissions.getLocationPermissions(this,))
         try {
-//            LocationManager.NETWORK_PROVIDER, LOCATION_INTERVAL, LOCATION_DISTANCE,
-//                    mLocationListeners[1]
+//
+//            mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, LOCATION_INTERVAL, LOCATION_DISTANCE,
+//                    mLocationListeners[0]);
             mLocationManager.requestLocationUpdates(LOCATION_INTERVAL,LOCATION_DISTANCE,criteria,mLocationListeners[0],null);
+
         }catch (SecurityException se){
             Toast.makeText(this, "Security Exception", Toast.LENGTH_SHORT).show();
         }
@@ -114,7 +115,7 @@ public class TrackingLocationService extends Service {
         if (mLocationManager == null) {
             mLocationManager = (LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
             criteria = new Criteria();
-            criteria.setAccuracy(Criteria.ACCURACY_FINE);
+            criteria.setAccuracy(Criteria.ACCURACY_COARSE);
             criteria.setPowerRequirement(Criteria.POWER_HIGH);
             criteria.setAltitudeRequired(false);
             criteria.setSpeedRequired(false);

@@ -44,8 +44,13 @@ public class MainActivityPresenter implements MainActivityMVP.Presenter {
         });
     }
 
+    /*
+        Note: Issue in below code because this method should be called once you are sure
+              that user is registred in firebase.
+     */
     @Override
     public void isTrackedByAnyone() {
+
         if(prefs.getId()!=null){
             String id = prefs.getId();
             FirebaseService.getStatusOfUser(id,new FirebaseCallback(){

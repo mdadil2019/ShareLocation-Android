@@ -44,8 +44,7 @@
         android:layout_alignStart="@+id/editTextLink"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="45dp"
-        android:enabled="false"
-        android:text="Stop" />
+        android:text="Stop Tracking" />
 
     <Button
         android:id="@+id/buttonShowLiveUsers"

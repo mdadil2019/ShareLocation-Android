@@ -8,7 +8,6 @@ public class AppPreferenceHelper implements PreferenceHelper {
     public static final String SHARED_PREF_KEY = "SharedPrefsKey";
     public static final String ID_KEY = "ID_KEY";
 
-
     SharedPreferences prefs;
 
 
@@ -24,4 +23,5 @@ public class AppPreferenceHelper implements PreferenceHelper {
     public String getId() {
         return prefs.getString(ID_KEY,null);
     }
+
 }
