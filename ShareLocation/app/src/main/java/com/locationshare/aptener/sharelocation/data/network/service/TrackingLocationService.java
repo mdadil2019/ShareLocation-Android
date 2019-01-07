@@ -127,8 +127,8 @@ public class TrackingLocationService extends Service {
     }
 
     public static String getFormattedDate() {
-        //SimpleDateFormat called without pattern
-        return new SimpleDateFormat().format(Calendar.getInstance().getTime());
+        Date date = new Date();
+        return date.toString();
     }
 
 

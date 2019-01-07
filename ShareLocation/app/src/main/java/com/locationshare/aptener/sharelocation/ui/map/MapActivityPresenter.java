@@ -23,7 +23,7 @@ public class MapActivityPresenter implements MapActivityMVP.Presenter {
 
                 String lat = value.substring(0,value.indexOf(','));
                 String lng = value.substring(value.indexOf(',')+2,value.indexOf('?'));
-                String recentUpdateTime = value.substring(value.indexOf('?')+1,value.length()-1);
+                String recentUpdateTime = value.substring(value.indexOf('?')+1,value.length());
                 latLng = new LatLng(Double.valueOf(lat),Double.valueOf(lng));
                 view.updateOnMap(latLng,recentUpdateTime);
 
