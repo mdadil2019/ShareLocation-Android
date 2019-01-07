@@ -40,6 +40,10 @@ import java.util.TimerTask;
 
 import javax.inject.Inject;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback,MapActivityMVP.View,LocationListener {
 
     private GoogleMap mMap;
@@ -49,6 +53,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     @Inject
     AppPreferenceHelper prefs;
+
+    @BindView(R.id.editTextCurrentUserLink)
+    TextView currentUserLinkTv;
 
     Timer timer;
 
@@ -62,6 +69,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+        ButterKnife.bind(this);
         ((MyApp)getApplication()).getApplicationComponent().inject(this);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -249,5 +257,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onProviderDisabled(String provider) {
         Toast.makeText(this, provider, Toast.LENGTH_SHORT).show();
+    }
+
+    @OnClick(R.id.buttonShareCurrentLocation)void shareLocation(){
+        presenter.addUser(prefs.getId());
+    }
+
+
+    @Override
+    public void showLink(String link) {
+        currentUserLinkTv.setText(link);
     }
 }
