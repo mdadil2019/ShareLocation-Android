@@ -67,8 +67,10 @@ public class MainActivity extends AppCompatActivity implements MainActivityMVP.V
     @TargetApi(Build.VERSION_CODES.M)
     private void askPermissions() {
         if(ContextCompat.checkSelfPermission(this,Manifest.permission.ACCESS_COARSE_LOCATION)!=PackageManager.PERMISSION_GRANTED
-                || ContextCompat.checkSelfPermission(this,Manifest.permission.READ_PHONE_STATE)!= PackageManager.PERMISSION_GRANTED){
-            requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION ,Manifest.permission.READ_PHONE_STATE}, GLOBAL_REQUEST_CODE);
+                || ContextCompat.checkSelfPermission(this,Manifest.permission.READ_PHONE_STATE)!= PackageManager.PERMISSION_GRANTED
+                || ContextCompat.checkSelfPermission(this,Manifest.permission.ACCESS_FINE_LOCATION)!= PackageManager.PERMISSION_GRANTED){
+            requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION
+                    ,Manifest.permission.READ_PHONE_STATE}, GLOBAL_REQUEST_CODE);
         }else{
             if(prefs.getId()!=null)
                 handleIntent();

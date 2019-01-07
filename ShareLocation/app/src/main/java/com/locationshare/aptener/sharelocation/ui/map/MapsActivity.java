@@ -7,6 +7,10 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.support.annotation.DrawableRes;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
@@ -14,6 +18,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -35,7 +40,7 @@ import java.util.TimerTask;
 
 import javax.inject.Inject;
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback,MapActivityMVP.View {
+public class MapsActivity extends FragmentActivity implements OnMapReadyCallback,MapActivityMVP.View,LocationListener {
 
     private GoogleMap mMap;
     String id;
@@ -47,7 +52,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     Timer timer;
 
-    View customMarkerView;
+
+    GoogleMap googleMap;
+    Marker currentLocationMarker;
+    private View customMarkerView;
+    private View customMarkerViewCurrentUser;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,6 +83,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      */
     @Override
     public void onMapReady(GoogleMap googleMap) {
+        customMarkerView = ((LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.map_marker, null);
+        customMarkerViewCurrentUser = ((LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.map_marker, null);
+
+        this.googleMap = googleMap;
+
         mMap = googleMap;
 
         // Add a marker in Sydney and move the camera
@@ -80,16 +95,25 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.addMarker(new MarkerOptions().position(location).title("Fetching location..."));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(location));
 
-        //inflate the marker layout
-        customMarkerView = ((LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.map_marker, null);
-        //ask presenter to listen to change in location and update the view accordingly
+       //ask presenter to listen to change in location and update the view accordingly
         presenter.fetchLocationUpdateOfFirebase(id,prefs.getId());
+        showCurrentUserLocation();
+    }
 
-
+    private void showCurrentUserLocation() {
+        googleMap.setMyLocationEnabled(true);
+        LocationManager locationManager = (LocationManager)getSystemService(LOCATION_SERVICE);
+        Criteria criteria = new Criteria();
+        Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        if (location != null) {
+            onLocationChanged(location);
+        }
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000, 0, this);
     }
 
     @Override
     public void updateOnMap(LatLng latLng, String lastUpdate) {
+
         if(timer!=null) {
             timer.cancel();
             timer = null;
@@ -127,6 +151,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     private Bitmap getMarkerBitmapFromView(@DrawableRes int resId, String lastUpdate) {
+        //inflate the marker layout
 
         ImageView markerImageView = customMarkerView.findViewById(R.id.imageViewProfile);
         TextView lastUpdateTv= customMarkerView.findViewById(R.id.textViewLastUpdateTime);
@@ -167,5 +192,62 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     protected void onDestroy() {
         super.onDestroy();
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        double latitude= location.getLatitude();
+        double longitude=location.getLongitude();
+
+        LatLng loc = new LatLng(latitude, longitude);
+
+        if (currentLocationMarker!=null){
+            currentLocationMarker.remove();
+        }
+
+        MarkerOptions markerOptions = new MarkerOptions().position(loc)
+                .title("Current Location")
+                .icon(BitmapDescriptorFactory.fromBitmap(getCurrentMarkerBitmapFromView(R.drawable.avatarm)));
+
+         currentLocationMarker = googleMap.addMarker(markerOptions);
+    }
+
+    private Bitmap getCurrentMarkerBitmapFromView(@DrawableRes int resId) {
+        //inflate the marker layout
+
+        ImageView markerImageView = customMarkerViewCurrentUser.findViewById(R.id.imageViewProfile);
+        TextView lastUpdateTv= customMarkerViewCurrentUser.findViewById(R.id.textViewLastUpdateTime);
+        View markerView= customMarkerViewCurrentUser.findViewById(R.id.markerview);
+        lastUpdateTv.setVisibility(View.GONE);
+        markerView.setVisibility(View.GONE);
+
+        markerImageView.setImageResource(resId);
+        customMarkerViewCurrentUser.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
+        customMarkerViewCurrentUser.layout(0, 0, customMarkerViewCurrentUser.getMeasuredWidth(), customMarkerViewCurrentUser.getMeasuredHeight());
+        customMarkerViewCurrentUser.buildDrawingCache();
+        Bitmap returnedBitmap = Bitmap.createBitmap(customMarkerViewCurrentUser.getMeasuredWidth(), customMarkerViewCurrentUser.getMeasuredHeight(),
+                Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(returnedBitmap);
+        canvas.drawColor(Color.WHITE, PorterDuff.Mode.SRC_IN);
+        Drawable drawable = customMarkerViewCurrentUser.getBackground();
+        if (drawable != null)
+            drawable.draw(canvas);
+        customMarkerViewCurrentUser.draw(canvas);
+        return returnedBitmap;
+    }
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+
+    }
+
+    @Override
+    public void onProviderEnabled(String provider) {
+
+    }
+
+    @Override
+    public void onProviderDisabled(String provider) {
+        Toast.makeText(this, provider, Toast.LENGTH_SHORT).show();
     }
 }

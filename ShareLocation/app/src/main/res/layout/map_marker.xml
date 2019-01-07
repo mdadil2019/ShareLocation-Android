@@ -7,6 +7,7 @@
     android:layout_height="wrap_content">
 
     <View
+        android:id="@+id/markerview"
         android:layout_width="200dp"
         android:layout_height="50dp"
         android:layout_alignParentStart="true"
@@ -15,8 +16,8 @@
         android:layout_marginStart="52dp"
         android:layout_marginLeft="52dp"
         android:layout_marginTop="0dp"
-        android:background="@android:color/background_dark"
-        android:alpha="0.5">
+        android:alpha="0.5"
+        android:background="@android:color/background_dark">
 
     </View>
 
