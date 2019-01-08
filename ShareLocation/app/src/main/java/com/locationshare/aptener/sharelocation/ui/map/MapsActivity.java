@@ -5,7 +5,6 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.location.Criteria;
 import android.location.Location;
@@ -14,8 +13,12 @@ import android.location.LocationManager;
 import android.support.annotation.DrawableRes;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,9 +33,12 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.locationshare.aptener.sharelocation.R;
+import com.locationshare.aptener.sharelocation.adapter.LiveUserAdapter;
 import com.locationshare.aptener.sharelocation.data.AppPreferenceHelper;
+import com.locationshare.aptener.sharelocation.data.model.User;
 import com.locationshare.aptener.sharelocation.di.root.MyApp;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Timer;
@@ -55,7 +61,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     AppPreferenceHelper prefs;
 
     @BindView(R.id.editTextCurrentUserLink)
-    TextView currentUserLinkTv;
+    EditText currentUserLinkEt;
+
+    @BindView(R.id.buttonShareCurrentLocation)
+    Button shareLocationBtn;
+
+    @BindView(R.id.recyclerViewTrackers)
+    RecyclerView recyclerView;
+
+    LiveUserAdapter liveUserAdapter;
+    ArrayList<User> users;
 
     Timer timer;
 
@@ -71,6 +86,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         setContentView(R.layout.activity_maps);
         ButterKnife.bind(this);
         ((MyApp)getApplication()).getApplicationComponent().inject(this);
+        users =  new ArrayList<>();
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -195,6 +211,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     protected void onResume() {
         super.onResume();
         presenter.setView(this);
+        presenter.isTrackedByAnyone();
     }
 
     @Override
@@ -266,6 +283,28 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     @Override
     public void showLink(String link) {
-        currentUserLinkTv.setText(link);
+        currentUserLinkEt.setText(link);
+    }
+
+    @Override
+    public void showShareLocationWidgets() {
+        shareLocationBtn.setVisibility(View.VISIBLE);
+        currentUserLinkEt.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideShareLocationTrackingWidgets() {
+        shareLocationBtn.setVisibility(View.INVISIBLE);
+        currentUserLinkEt.setVisibility(View.INVISIBLE);
+    }
+
+    @Override
+    public void updateList(User user) {
+        recyclerView.setVisibility(View.VISIBLE);
+        users.add(user);
+        liveUserAdapter = new LiveUserAdapter(this,users,prefs.getId());
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(linearLayoutManager);
+        recyclerView.setAdapter(liveUserAdapter);
     }
 }

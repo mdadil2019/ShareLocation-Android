@@ -43,16 +43,12 @@ public class LiveUserAdapter extends RecyclerView.Adapter<LiveUserAdapter.MyLive
     @Override
     public void onBindViewHolder(@NonNull final MyLiveUsers holder, final int position) {
         holder.userIdTv.setText(mUsers.get(position).getUserId());
-        holder.trackingIv.setOnClickListener(new OnClickListener() {
+        holder.thumbnailIv.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 String id = mUsers.get(position).getUserId();
-                //start the map activity with passed id
-                Intent intent = new Intent(mContext,MapsActivity.class);
-                intent.putExtra("ID",id);
-                intent.putExtra("MY_ID",myId);
-                mContext.startActivity(intent);
+                //show the location of the user in current map view
             }
         });
     }
@@ -66,8 +62,9 @@ public class LiveUserAdapter extends RecyclerView.Adapter<LiveUserAdapter.MyLive
         @BindView(R.id.textViewId)
         TextView userIdTv;
 
-        @BindView(R.id.imageViewTrack)
-        ImageView trackingIv;
+        @BindView(R.id.imageViewThumbnail)
+        ImageView thumbnailIv;
+
         public MyLiveUsers(View itemView) {
             super(itemView);
             ButterKnife.bind(this,itemView);

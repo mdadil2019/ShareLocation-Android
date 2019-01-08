@@ -2,6 +2,7 @@ package com.locationshare.aptener.sharelocation.ui.main;
 
 import android.content.Context;
 import android.content.Intent;
+import android.support.annotation.Nullable;
 
 import com.locationshare.aptener.sharelocation.data.AppPreferenceHelper;
 import com.locationshare.aptener.sharelocation.data.network.FirebaseCallback;
@@ -55,8 +56,10 @@ public class MainActivityPresenter implements MainActivityMVP.Presenter {
             String id = prefs.getId();
             FirebaseService.getStatusOfUser(id,new FirebaseCallback(){
                 @Override
-                public void onDataReturn(String value) {
-                    if(value.equals(Constants.LISTEN_STATUS)){
+                public void onDataReturn(@Nullable String value) {
+                    if(value==null){
+                        view.deactivateStopButton();
+                    }else if(value.equals(Constants.LISTEN_STATUS)){
                         view.activateStopButton();
                     }else if(value.equals(Constants.STOP_LISTEN_STATUS)){
                         view.deactivateStopButton();

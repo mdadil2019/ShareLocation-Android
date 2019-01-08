@@ -91,9 +91,14 @@ public class FirebaseService {
     public static void getStatusOfUser(String id, final FirebaseCallback firebaseCallback) {
         getRootReference().child(id).child(Constants.STATUS).addValueEventListener(new ValueEventListener() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                String snapShotValue = dataSnapshot.getValue().toString();
-                firebaseCallback.onDataReturn(snapShotValue);
+            public void onDataChange( DataSnapshot dataSnapshot) {
+                if(dataSnapshot.getValue()!=null){
+                    String snapShotValue = dataSnapshot.getValue().toString();
+                    firebaseCallback.onDataReturn(snapShotValue);
+                }else{
+                    firebaseCallback.onDataReturn(null);
+                }
+
             }
 
             @Override

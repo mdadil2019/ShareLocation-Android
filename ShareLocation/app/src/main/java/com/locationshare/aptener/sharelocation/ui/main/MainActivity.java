@@ -169,6 +169,6 @@ public class MainActivity extends AppCompatActivity implements MainActivityMVP.V
     protected void onResume() {
         super.onResume();
         presenter.setView(this);
-//        presenter.isTrackedByAnyone();
+        presenter.isTrackedByAnyone();
     }
 }
