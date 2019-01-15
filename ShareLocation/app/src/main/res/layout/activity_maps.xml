@@ -16,40 +16,39 @@ android:layout_height="wrap_content">
         tools:context=".ui.map.MapsActivity">
 
     </fragment>
+
     <Button
         android:id="@+id/buttonShareCurrentLocation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/editTextCurrentUserLink"
-        android:layout_centerHorizontal="true"
-        android:drawableTop="@drawable/ic_baseline_place_24px"
-
-        android:text="Share Your Location"
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="463dp"
         android:background="@android:color/transparent"
-        android:visibility="invisible"/>
+        android:drawableTop="@drawable/ic_baseline_place_24px"
+        android:text="@string/shareLcnTxt"
+        android:layout_alignParentBottom="true"
+        android:visibility="visible"
+
+        />
 
     <EditText
         android:id="@+id/editTextCurrentUserLink"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentBottom="true"
         android:ems="10"
         android:gravity="center"
         android:hint="Tap on share location to generate the link"
         android:inputType="textPersonName"
-        android:visibility="invisible"/>
+        android:visibility="visible" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerViewTrackers"
         android:layout_width="match_parent"
         android:layout_height="100dp"
+        android:layout_above="@+id/buttonShareCurrentLocation"
         android:layout_alignParentStart="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginStart="0dp"
-        android:layout_marginBottom="0dp"
-        android:visibility="invisible"
-        >
+        android:layout_marginBottom="-463dp"
+        android:visibility="visible">
 
     </android.support.v7.widget.RecyclerView>
 

@@ -1,4 +1,6 @@
 <resources>
     <string name="app_name">ShareLocation</string>
     <string name="title_activity_maps">Map</string>
+    <string name="shareLcnTxt">Share Your Location</string>
+    <string name="stopShareLcnTxt">Stop Sharing Location</string>
 </resources>

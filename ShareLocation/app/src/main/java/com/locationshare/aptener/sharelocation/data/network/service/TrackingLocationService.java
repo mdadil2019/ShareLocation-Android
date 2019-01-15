@@ -20,6 +20,7 @@ import java.util.Date;
 
 import javax.inject.Inject;
 
+import static com.locationshare.aptener.sharelocation.utils.Constants.ACCURACY;
 import static com.locationshare.aptener.sharelocation.utils.Constants.LOCATION;
 
 public class TrackingLocationService extends Service {
@@ -44,8 +45,8 @@ public class TrackingLocationService extends Service {
             String id = prefs.getId();
             String lat = String.valueOf(currentLocation.getLatitude());
             String lng = String.valueOf(currentLocation.getLongitude());
-
-            String infoString = lat + ", " + lng + " ? " + getFormattedDate();
+            String accuracy = String.valueOf(location.getAccuracy());
+            String infoString = lat + ", " + lng + " ? " + getFormattedDate() + " * " + accuracy;
 
             FirebaseInstance.getRootReference().child(id).child(LOCATION).setValue(infoString);
         }

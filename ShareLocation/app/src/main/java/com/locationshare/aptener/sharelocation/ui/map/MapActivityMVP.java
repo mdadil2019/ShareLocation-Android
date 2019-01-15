@@ -8,13 +8,15 @@ import com.locationshare.aptener.sharelocation.data.network.FirebaseCallback;
 
 public interface MapActivityMVP {
     interface View{
-        void updateOnMap(LatLng latLng, String lastUpdateTime);
+        void updateOnMap(LatLng latLng, String lastUpdateTime, String accuracy);
 
         void showLink(String link);
 
         void showShareLocationWidgets();
 
         void hideShareLocationTrackingWidgets();
+
+        void modifyShareLocationTrackingWidgets();
 
         void updateList(User user);
     }

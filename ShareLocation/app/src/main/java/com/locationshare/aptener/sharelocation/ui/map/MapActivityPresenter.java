@@ -24,10 +24,14 @@ public class MapActivityPresenter implements MapActivityMVP.Presenter {
     LatLng latLng;
     Context mContext;
     AppPreferenceHelper mPrefs;
+
+
     public MapActivityPresenter(Context context, AppPreferenceHelper preferenceHelper){
         mContext = context;
         mPrefs = preferenceHelper;
     }
+
+
     @Override
     public void setView(MapActivityMVP.View view) {
         this.view = view;
@@ -41,18 +45,15 @@ public class MapActivityPresenter implements MapActivityMVP.Presenter {
         FirebaseService.getLocationUpdates(id, new FirebaseCallback() {
             @Override
             public void onDataReturn(String value) {
-
                 String lat = value.substring(0,value.indexOf(','));
                 String lng = value.substring(value.indexOf(',')+2,value.indexOf('?'));
-                String recentUpdateTime = value.substring(value.indexOf('?')+1,value.length());
+                String recentUpdateTime = value.substring(value.indexOf('?')+1,value.indexOf('*'));
+                String accuracy = value.substring(value.indexOf("*")+1,value.length());
                 latLng = new LatLng(Double.valueOf(lat),Double.valueOf(lng));
-                view.updateOnMap(latLng,recentUpdateTime);
-
+                view.updateOnMap(latLng,recentUpdateTime,accuracy);
 
             }
         });
-
-
     }
 
     @Override
@@ -62,9 +63,9 @@ public class MapActivityPresenter implements MapActivityMVP.Presenter {
             public void onDataReturn(String value) {
                 String sharableLink = "http://www.share.com/myapp/" + value ;
                 view.showLink(sharableLink);
-
                 Intent intent = new Intent(mContext,ListenForChangeInState.class);
                 intent.putExtra("ID",mPrefs.getId());
+                view.modifyShareLocationTrackingWidgets();
                 mContext.startService(intent);
             }
         });
@@ -73,7 +74,6 @@ public class MapActivityPresenter implements MapActivityMVP.Presenter {
     @Override
     public void isTrackedByAnyone() {
         //show progress bar in map view center
-
         final String deviceId = mPrefs.getId();
         FirebaseService.getStatusOfUser(deviceId, new FirebaseCallback() {
             @Override
@@ -81,14 +81,14 @@ public class MapActivityPresenter implements MapActivityMVP.Presenter {
                 if(value==null){
                     view.showShareLocationWidgets();
                 }else if(value.equals(LISTEN_STATUS)){
+
                     /*
-                    1. Hide the tracking buttons
+                    1. change the text of button from StartShare to StopShare && set the generated link on the edittext
                     2. find other users id which are listening to the current user
                     3. show them in the recycler view with default thumnail and id of the user
                     4. on click of the thumbnail, show it's current location in map view by moving the camera
                     */
-
-                    view.hideShareLocationTrackingWidgets();
+                    view.modifyShareLocationTrackingWidgets();
                     FirebaseService.getTrackingUsers(deviceId, new FirebaseUserAddedCallback() {
                         @Override
                         public void userAdded(User user) {

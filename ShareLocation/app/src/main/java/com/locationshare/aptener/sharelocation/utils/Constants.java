@@ -8,4 +8,5 @@ public class Constants {
     public static final String LOCATION = "Location";
     public static final String LIVE_TRACKING_USERS = "LIVE_TRACKING_USERS";
     public static final String LIVE_STATUS_ON = "LIVE", LIVE_STATUS_OFF = "SLEEP";
+    public static final String ACCURACY = "Accuracy";
 }

@@ -136,7 +136,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     @Override
-    public void updateOnMap(LatLng latLng, String lastUpdate) {
+    public void updateOnMap(LatLng latLng, String lastUpdate, String accuracy) {
 
         if(timer!=null) {
             timer.cancel();
@@ -145,10 +145,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.clear();
         MarkerOptions markerOptions = new MarkerOptions().position(latLng)
                 .title(lastUpdate)
-                .icon(BitmapDescriptorFactory.fromBitmap(getMarkerBitmapFromView(R.drawable.avatarm,lastUpdate)));
+                .icon(BitmapDescriptorFactory.fromBitmap(getMarkerBitmapFromView(R.drawable.avatarm,lastUpdate,accuracy)));
 
         Marker marker = mMap.addMarker(markerOptions);
-        setTimerListner(marker, lastUpdate);
+        setTimerListner(marker, lastUpdate,accuracy);
         CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 17);
 //        mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng)); ::=> Note: zooming after moving it's position will result into zoom to random location
         mMap.animateCamera(cameraUpdate);
@@ -158,7 +158,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     }
 
-    private void setTimerListner(final Marker marker, final String lastUpdate) {
+    private void setTimerListner(final Marker marker, final String lastUpdate, final String accuracy) {
         if(timer==null){
             timer = new Timer();
             timer.schedule(new TimerTask() {
@@ -166,7 +166,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            marker.setIcon(BitmapDescriptorFactory.fromBitmap(getMarkerBitmapFromView(R.drawable.avatarm,lastUpdate)));
+                            marker.setIcon(BitmapDescriptorFactory.fromBitmap(getMarkerBitmapFromView(R.drawable.avatarm,lastUpdate,accuracy)));
                         }
                     });
                 }
@@ -174,11 +174,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
-    private Bitmap getMarkerBitmapFromView(@DrawableRes int resId, String lastUpdate) {
+    private Bitmap getMarkerBitmapFromView(@DrawableRes int resId, String lastUpdate, String accuracy) {
         //inflate the marker layout
 
         ImageView markerImageView = customMarkerView.findViewById(R.id.imageViewProfile);
         TextView lastUpdateTv= customMarkerView.findViewById(R.id.textViewLastUpdateTime);
+        TextView accuracyTv = customMarkerView.findViewById(R.id.textViewAccuracy);
+        accuracyTv.setText(accuracy);
         lastUpdateTv.setText(getLastFetchedTime(lastUpdate));
         markerImageView.setImageResource(resId);
         customMarkerView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
@@ -207,17 +209,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         return diff;
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        presenter.setView(this);
-        presenter.isTrackedByAnyone();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-    }
 
     @Override
     public void onLocationChanged(Location location) {
@@ -277,7 +268,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     @OnClick(R.id.buttonShareCurrentLocation)void shareLocation(){
-        presenter.addUser(prefs.getId());
+        if(shareLocationBtn.getText().toString().equals(getString(R.string.shareLcnTxt))){
+            presenter.addUser(prefs.getId());
+
+        }
+        else{
+            shareLocationBtn.setText(R.string.shareLcnTxt);
+            currentUserLinkEt.setText("");
+
+            //stop location sharing
+            //update recycler view
+        }
     }
 
 
@@ -294,8 +295,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     @Override
     public void hideShareLocationTrackingWidgets() {
-        shareLocationBtn.setVisibility(View.INVISIBLE);
-        currentUserLinkEt.setVisibility(View.INVISIBLE);
+//        shareLocationBtn.setVisibility(View.INVISIBLE);
+//        currentUserLinkEt.setVisibility(View.INVISIBLE);
+    }
+
+    @Override
+    public void modifyShareLocationTrackingWidgets() {
+        if(shareLocationBtn.getText().toString().equals(getString(R.string.shareLcnTxt))){
+            shareLocationBtn.setText(getString(R.string.stopShareLcnTxt));
+            String sharableLink = "http://www.share.com/myapp/" + prefs.getId() ;
+            currentUserLinkEt.setText(sharableLink);
+        }
     }
 
     @Override
@@ -306,5 +316,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setAdapter(liveUserAdapter);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        presenter.setView(this);
+        presenter.isTrackedByAnyone();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
     }
 }
