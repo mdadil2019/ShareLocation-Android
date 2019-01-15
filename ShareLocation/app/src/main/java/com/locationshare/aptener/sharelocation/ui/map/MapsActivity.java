@@ -153,8 +153,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 //        mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng)); ::=> Note: zooming after moving it's position will result into zoom to random location
         mMap.animateCamera(cameraUpdate);
 
-//        updateLastFetchedTime(lastUpdate);
-
 
     }
 
@@ -180,7 +178,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         ImageView markerImageView = customMarkerView.findViewById(R.id.imageViewProfile);
         TextView lastUpdateTv= customMarkerView.findViewById(R.id.textViewLastUpdateTime);
         TextView accuracyTv = customMarkerView.findViewById(R.id.textViewAccuracy);
-        accuracyTv.setText(accuracy);
+        accuracyTv.setText("Accuracy: "+ accuracy + "Meter");
         lastUpdateTv.setText(getLastFetchedTime(lastUpdate));
         markerImageView.setImageResource(resId);
         customMarkerView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
